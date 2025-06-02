@@ -11,8 +11,8 @@ declare(strict_types=1);
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @copyright  Copyright (c) CoreShop GmbH (https://www.coreshop.org)
- * @license    https://www.coreshop.org/license     GPLv3 and CCL
+ * @copyright  Copyright (c) CoreShop GmbH (https://www.coreshop.com)
+ * @license    https://www.coreshop.com/license     GPLv3 and CCL
  *
  */
 
@@ -703,6 +703,27 @@ final class PimcoreClassContext implements Context
         $instance->save();
 
         $this->sharedStorage->set('object-instance', $instance);
+    }
+
+    /**
+     * @Given /^there are (\d+) instances of (class|behat-class "[^"]+") with key-prefix "([^"]+)"$/
+     */
+    public function thereAreCountInstancesOfClassWithKey(int $count, ClassDefinition $definition, $key): void
+    {
+        /**
+         * @var class-string $className
+         */
+        $className = sprintf('Pimcore\\Model\\DataObject\\%s', $definition->getName());
+
+        for ($i = 0; $i < $count; ++$i) {
+            /**
+             * @var Concrete $instance
+             */
+            $instance = new $className();
+            $instance->setKey(sprintf('%s-%s', $key, $i));
+            $instance->setParentId(1);
+            $instance->save();
+        }
     }
 
     /**

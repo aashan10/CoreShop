@@ -11,14 +11,15 @@ declare(strict_types=1);
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @copyright  Copyright (c) CoreShop GmbH (https://www.coreshop.org)
- * @license    https://www.coreshop.org/license     GPLv3 and CCL
+ * @copyright  Copyright (c) CoreShop GmbH (https://www.coreshop.com)
+ * @license    https://www.coreshop.com/license     GPLv3 and CCL
  *
  */
 
 namespace CoreShop\Behat\Page\Frontend;
 
 use Behat\Mink\Exception\ElementNotFoundException;
+use CoreShop\Behat\Service\DriverHelper;
 use CoreShop\Component\Product\Model\ProductUnitDefinitionInterface;
 
 class CartPage extends AbstractFrontendPage implements CartPageInterface
@@ -93,17 +94,23 @@ class CartPage extends AbstractFrontendPage implements CartPageInterface
     {
         $this->getElement('item_quantity_input', ['%name%' => $productName])->setValue($quantity);
         $this->getElement('update_cart_button')->click();
+
+        DriverHelper::waitForPageToLoad($this->getSession());
     }
 
     public function removeProduct(string $productName): void
     {
         $this->getElement('delete_button', ['%name%' => $productName])->press();
+
+        DriverHelper::waitForPageToLoad($this->getSession());
     }
 
     public function applyVoucherCode(string $voucherCode): void
     {
         $this->getElement('voucher_code')->setValue($voucherCode);
         $this->getElement('apply_voucher_button')->click();
+
+        DriverHelper::waitForPageToLoad($this->getSession());
     }
 
     public function getTotal(): string

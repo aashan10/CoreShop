@@ -5,8 +5,8 @@
  * For the full copyright and license information, please view the LICENSE.md and gpl-3.0.txt
  * files that are distributed with this source code.
  *
- * @copyright  Copyright (c) CoreShop GmbH (https://www.coreshop.org)
- * @license    https://www.coreshop.org/license     GPLv3 and CCL
+ * @copyright  Copyright (c) CoreShop GmbH (https://www.coreshop.com)
+ * @license    https://www.coreshop.com/license     GPLv3 and CCL
  *
  */
 
@@ -268,7 +268,17 @@ coreshop.order.order.detail.blocks.detail = Class.create(coreshop.order.order.de
                     dataIndex: 'value',
                     width: 150,
                     align: 'right',
-                    renderer: function (value) {
+                    renderer: function (value, metaData, record) {
+                        var data = record.data;
+                        if (data.hasOwnProperty('precision') && data.hasOwnProperty('factor')) {
+                            return '<span style="font-weight:bold">' + coreshop.util.format.currency_precision(
+                                this.sale.baseCurrency.isoCode,
+                                value,
+                                data.precision,
+                                data.factor,
+                            ) + '</span>';
+                        }
+
                         return '<span style="font-weight:bold">' + coreshop.util.format.currency(this.sale.baseCurrency.isoCode, value) + '</span>';
                     }.bind(this)
                 },
@@ -278,7 +288,18 @@ coreshop.order.order.detail.blocks.detail = Class.create(coreshop.order.order.de
                     width: 150,
                     align: 'right',
                     hidden: this.sale.currency.id === this.sale.baseCurrency.id,
-                    renderer: function (value) {
+                    renderer: function (value, metaData, record) {
+                        var data = record.data;
+
+                        if (data.hasOwnProperty('precision') && data.hasOwnProperty('factor')) {
+                            return '<span style="font-weight:bold">' +  coreshop.util.format.currency_precision(
+                                this.sale.currency.isoCode,
+                                value,
+                                data.precision,
+                                data.factor,
+                            )  + '</span>';
+                        }
+
                         return '<span style="font-weight:bold">' + coreshop.util.format.currency(this.sale.currency.isoCode, value) + '</span>';
                     }.bind(this)
                 }

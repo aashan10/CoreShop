@@ -11,14 +11,15 @@ declare(strict_types=1);
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @copyright  Copyright (c) CoreShop GmbH (https://www.coreshop.org)
- * @license    https://www.coreshop.org/license     GPLv3 and CCL
+ * @copyright  Copyright (c) CoreShop GmbH (https://www.coreshop.com)
+ * @license    https://www.coreshop.com/license     GPLv3 and CCL
  *
  */
 
 namespace CoreShop\Behat\Page\Frontend;
 
 use Behat\Mink\Element\NodeElement;
+use CoreShop\Behat\Service\DriverHelper;
 
 class HomePage extends AbstractFrontendPage implements HomePageInterface
 {
@@ -35,6 +36,8 @@ class HomePage extends AbstractFrontendPage implements HomePageInterface
     public function logOut(): void
     {
         $this->getElement('logout_button')->click();
+
+        DriverHelper::waitForPageToLoad($this->getSession());
     }
 
     public function hasLogoutButton(): bool
@@ -57,6 +60,8 @@ class HomePage extends AbstractFrontendPage implements HomePageInterface
         $this->getElement('currency_selector')->click();
 
         $this->getElement('currency_selector_code', ['%code%' => $currencyCode])->click();
+
+        DriverHelper::waitForPageToLoad($this->getSession());
     }
 
     public function getActiveLocale(): string

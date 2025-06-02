@@ -8,13 +8,13 @@
     "ecommerce",
     "workflow"
   ],
-  "homepage": "http://www.coreshop.org",
+  "homepage": "https://www.coreshop.com",
   "license": "GPL-3.0-or-later",
   "authors": [
     {
       "name": "CoreShop Team",
-      "email": "info@coreshop.org",
-      "homepage": "https://www.coreshop.org/",
+      "email": "info@coreshop.com",
+      "homepage": "https://www.coreshop.com/",
       "role": "Developer"
     },
     {

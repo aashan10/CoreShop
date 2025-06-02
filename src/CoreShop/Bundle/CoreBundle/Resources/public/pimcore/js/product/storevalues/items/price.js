@@ -7,8 +7,8 @@
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @copyright  Copyright (c) CoreShop GmbH (https://www.coreshop.org)
- * @license    https://www.coreshop.org/license     GPLv3 and CCL
+ * @copyright  Copyright (c) CoreShop GmbH (https://www.coreshop.com)
+ * @license    https://www.coreshop.com/license     GPLv3 and CCL
  *
  */
 
@@ -50,6 +50,13 @@ coreshop.product.storeValues.items.price = Class.create(coreshop.product.storeVa
         if (is_numeric(this.builder.fieldConfig['maxValue'])) {
             priceField.setMaxValue(this.builder.fieldConfig.maxValue);
         }
+
+        priceField.on('blur', function (field) {
+            var value = field.getValue();
+            if (value === null || value === '') {
+                field.setValue(0);
+            }
+        });
 
         priceField.resumeEvents(true);
 

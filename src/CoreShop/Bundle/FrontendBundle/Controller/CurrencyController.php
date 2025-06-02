@@ -11,8 +11,8 @@ declare(strict_types=1);
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @copyright  Copyright (c) CoreShop GmbH (https://www.coreshop.org)
- * @license    https://www.coreshop.org/license     GPLv3 and CCL
+ * @copyright  Copyright (c) CoreShop GmbH (https://www.coreshop.com)
+ * @license    https://www.coreshop.com/license     GPLv3 and CCL
  *
  */
 
@@ -20,6 +20,7 @@ namespace CoreShop\Bundle\FrontendBundle\Controller;
 
 use CoreShop\Component\Core\Context\ShopperContextInterface;
 use CoreShop\Component\Core\Currency\CurrencyStorageInterface;
+use CoreShop\Component\Core\Model\CurrencyInterface;
 use CoreShop\Component\Core\Repository\CurrencyRepositoryInterface;
 use CoreShop\Component\Order\Context\CartContextInterface;
 use CoreShop\Component\Order\Manager\CartManagerInterface;
@@ -46,6 +47,11 @@ class CurrencyController extends FrontendController
 
         $currencyCode = $this->getParameterFromRequest($request, 'currencyCode');
         $currency = $this->getCurrencyRepository()->getByCode($currencyCode);
+
+        if (!$currency instanceof CurrencyInterface) {
+            throw $this->createNotFoundException();
+        }
+
         $cartManager = $this->container->get(CartManagerInterface::class);
         $cartContext = $this->container->get(CartContextInterface::class);
         $cart = $cartContext->getCart();

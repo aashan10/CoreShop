@@ -7,8 +7,8 @@
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @copyright  Copyright (c) CoreShop GmbH (https://www.coreshop.org)
- * @license    https://www.coreshop.org/license     GPLv3 and CCL
+ * @copyright  Copyright (c) CoreShop GmbH (https://www.coreshop.com)
+ * @license    https://www.coreshop.com/license     GPLv3 and CCL
  *
  */
 
@@ -49,6 +49,26 @@ pimcore.object.tags.coreShopMoney = Class.create(pimcore.object.tags.abstract, {
             // we have to use Number since the spinner trigger don't work in grid -> seems to be a bug of Ext
             return new Ext.form.field.Number(editorConfig);
         }
+    },
+
+    getGridColumnConfig:function (field) {
+        var renderer = function (key, value, metaData, record) {
+            this.applyPermissionStyle(key, value, metaData, record);
+
+            try {
+                if (record.data.inheritedFields && record.data.inheritedFields[key] && record.data.inheritedFields[key].inherited == true) {
+                    metaData.tdCls += " grid_value_inherited";
+                }
+            } catch (e) {
+                console.log(e);
+            }
+
+            return Ext.util.Format.htmlEncode(coreshop.util.format.number(value));
+
+        }.bind(this, field.key);
+
+        return {text: t(field.label), sortable:true, dataIndex:field.key, renderer:renderer,
+            editor:this.getGridColumnEditor(field)};
     },
 
     getGridColumnFilter: function (field)

@@ -11,8 +11,8 @@ declare(strict_types=1);
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @copyright  Copyright (c) CoreShop GmbH (https://www.coreshop.org)
- * @license    https://www.coreshop.org/license     GPLv3 and CCL
+ * @copyright  Copyright (c) CoreShop GmbH (https://www.coreshop.com)
+ * @license    https://www.coreshop.com/license     GPLv3 and CCL
  *
  */
 
@@ -37,6 +37,12 @@ class GridController extends AdminAbstractController
         TranslatorInterface $translator,
     ): Response {
         $services = [];
+        /**
+         * @var \Pimcore\Model\User $user
+         *
+         * @psalm-suppress InternalMethod
+         */
+        $user = $this->getAdminUser();
         /** @var GridFilterInterface $service */
         foreach ($gridFilterServiceRegistry->all() as $id => $service) {
             if ($service->supports($listType) !== true) {
@@ -45,7 +51,7 @@ class GridController extends AdminAbstractController
 
             $services[] = [
                 'id' => $id,
-                'name' => $translator->trans($service->getName(), [], 'admin'),
+                'name' => $translator->trans($service->getName(), [], 'admin', $user->getLanguage()),
             ];
         }
 
@@ -58,6 +64,12 @@ class GridController extends AdminAbstractController
         TranslatorInterface $translator,
     ): Response {
         $services = [];
+        /**
+         * @var \Pimcore\Model\User $user
+         *
+         * @psalm-suppress InternalMethod
+         */
+        $user = $this->getAdminUser();
         /** @var GridActionInterface $service */
         foreach ($gridActionServiceRegistry->all() as $id => $service) {
             if ($service->supports($listType) !== true) {
@@ -66,7 +78,7 @@ class GridController extends AdminAbstractController
 
             $services[] = [
                 'id' => $id,
-                'name' => $translator->trans($service->getName(), [], 'admin'),
+                'name' => $translator->trans($service->getName(), [], 'admin', $user->getLanguage()),
             ];
         }
 

@@ -11,8 +11,8 @@ declare(strict_types=1);
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @copyright  Copyright (c) CoreShop GmbH (https://www.coreshop.org)
- * @license    https://www.coreshop.org/license     GPLv3 and CCL
+ * @copyright  Copyright (c) CoreShop GmbH (https://www.coreshop.com)
+ * @license    https://www.coreshop.com/license     GPLv3 and CCL
  *
  */
 
@@ -326,7 +326,7 @@ class Money extends DataObject\ClassDefinition\Data implements
         $code .= '* Get ' . str_replace(['/**', '*/', '//'], '', $this->getName()) . ' - ' . str_replace(['/**', '*/', '//'], '', $this->getTitle()) . "\n";
         $code .= '* @return ' . $this->getPhpdocReturnType() . "\n";
         $code .= '*/' . "\n";
-        $code .= 'public function get' . ucfirst($key) . ' (): ' . ($this->nullable ? '?' : '') . " {\n";
+        $code .= 'public function get' . ucfirst($key) . ' (): ' . ($this->nullable ? '?' : '') . "int {\n";
 
         if (method_exists($this, 'preGetData')) {
             $code .= "\t" . '$data = $this->getDefinition()->getFieldDefinition("' . $key . '")->preGetData($this);' . "\n";
@@ -612,7 +612,7 @@ class Money extends DataObject\ClassDefinition\Data implements
                 throw new ValidationException('Value in field [ ' . $this->getName() . ' ] is not at least ' . $this->getMinValue());
             }
 
-            if (null !== $this->getMaxValue() && $data > $this->getMaxValue()) {
+            if (null !== $this->getMaxValue() && $this->getMaxValue() > 0 && $data > $this->getMaxValue()) {
                 throw new ValidationException('Value in field [ ' . $this->getName() . ' ] is bigger than ' . $this->getMaxValue());
             }
         }

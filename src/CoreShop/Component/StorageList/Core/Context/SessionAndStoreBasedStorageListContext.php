@@ -11,8 +11,8 @@ declare(strict_types=1);
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @copyright  Copyright (c) CoreShop GmbH (https://www.coreshop.org)
- * @license    https://www.coreshop.org/license     GPLv3 and CCL
+ * @copyright  Copyright (c) CoreShop GmbH (https://www.coreshop.com)
+ * @license    https://www.coreshop.com/license     GPLv3 and CCL
  *
  */
 
@@ -30,8 +30,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 final class SessionAndStoreBasedStorageListContext implements StorageListContextInterface
 {
-    private ?StorageListInterface $storageList = null;
-
     public function __construct(
         private RequestStack $requestStack,
         private string $sessionKeyName,
@@ -42,10 +40,6 @@ final class SessionAndStoreBasedStorageListContext implements StorageListContext
 
     public function getStorageList(): StorageListInterface
     {
-        if (null !== $this->storageList) {
-            return $this->storageList;
-        }
-
         try {
             $store = $this->storeContext->getStore();
         } catch (StoreNotFoundException $exception) {
@@ -92,8 +86,6 @@ final class SessionAndStoreBasedStorageListContext implements StorageListContext
 
             throw new StorageListNotFoundException('CoreShop was not able to find the List in session');
         }
-
-        $this->storageList = $storageList;
 
         return $storageList;
     }

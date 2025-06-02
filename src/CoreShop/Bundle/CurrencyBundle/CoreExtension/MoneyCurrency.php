@@ -11,8 +11,8 @@ declare(strict_types=1);
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @copyright  Copyright (c) CoreShop GmbH (https://www.coreshop.org)
- * @license    https://www.coreshop.org/license     GPLv3 and CCL
+ * @copyright  Copyright (c) CoreShop GmbH (https://www.coreshop.com)
+ * @license    https://www.coreshop.com/license     GPLv3 and CCL
  *
  */
 
@@ -219,6 +219,22 @@ class MoneyCurrency extends Model\DataObject\ClassDefinition\Data implements
         return null;
     }
 
+    public function getDataForGrid(?Money $data, Concrete $object = null, array $params = []): ?array
+    {
+        if (null === $data) {
+            return null;
+        }
+
+        return [
+            'value' => $data->getValue(),
+            'currency' => [
+                'id' => $data->getCurrency()?->getId(),
+                'name' => $data->getCurrency()?->getName(),
+                'isoCode' => $data->getCurrency()?->getIsoCode(),
+            ],
+        ];
+    }
+
     public function getVersionPreview(mixed $data, Concrete $object = null, array $params = []): string
     {
         return (string) $data;
@@ -247,7 +263,7 @@ class MoneyCurrency extends Model\DataObject\ClassDefinition\Data implements
                 );
             }
 
-            if ((string) $this->getMaxValue() !== '' && $data->getValue() > $this->getMaxValue()) {
+            if ((string) $this->getMaxValue() !== '' && $this->getMaxValue() > 0 && $data->getValue() > $this->getMaxValue()) {
                 throw new Model\Element\ValidationException(
                     'Value in field [ ' . $this->getName() . ' ] is bigger than ' . $this->getMaxValue(),
                 );

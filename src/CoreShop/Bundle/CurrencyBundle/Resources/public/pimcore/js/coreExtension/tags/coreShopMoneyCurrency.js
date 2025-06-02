@@ -7,8 +7,8 @@
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @copyright  Copyright (c) CoreShop GmbH (https://www.coreshop.org)
- * @license    https://www.coreshop.org/license     GPLv3 and CCL
+ * @copyright  Copyright (c) CoreShop GmbH (https://www.coreshop.com)
+ * @license    https://www.coreshop.com/license     GPLv3 and CCL
  *
  */
 
@@ -82,6 +82,29 @@ pimcore.object.tags.coreShopMoneyCurrency = Class.create(pimcore.object.tags.abs
         return this.component;
     },
 
+    getGridColumnConfig:function (field) {
+        var renderer = function (key, value, metaData, record) {
+            this.applyPermissionStyle(key, value, metaData, record);
+
+            try {
+                if (record.data.inheritedFields && record.data.inheritedFields[key] && record.data.inheritedFields[key].inherited == true) {
+                    metaData.tdCls += " grid_value_inherited";
+                }
+            } catch (e) {
+                console.log(e);
+            }
+
+            if (!value) {
+                return '';
+            }
+
+            return Ext.util.Format.htmlEncode(coreshop.util.format.currency(value.currency.isoCode, value.value));
+
+        }.bind(this, field.key);
+
+        return {text: t(field.label), sortable:true, dataIndex:field.key, renderer:renderer,
+            editor:this.getGridColumnEditor(field)};
+    },
 
     getLayoutShow: function ()
     {

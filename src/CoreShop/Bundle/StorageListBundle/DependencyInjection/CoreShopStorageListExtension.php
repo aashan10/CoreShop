@@ -11,14 +11,15 @@ declare(strict_types=1);
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @copyright  Copyright (c) CoreShop GmbH (https://www.coreshop.org)
- * @license    https://www.coreshop.org/license     GPLv3 and CCL
+ * @copyright  Copyright (c) CoreShop GmbH (https://www.coreshop.com)
+ * @license    https://www.coreshop.com/license     GPLv3 and CCL
  *
  */
 
 namespace CoreShop\Bundle\StorageListBundle\DependencyInjection;
 
 use CoreShop\Bundle\ResourceBundle\DependencyInjection\Extension\AbstractModelExtension;
+use CoreShop\Bundle\StorageListBundle\Core\EventListener\SessionStoreStorageListLogoutSubscriber;
 use CoreShop\Bundle\StorageListBundle\Core\EventListener\SessionStoreStorageListSubscriber;
 use CoreShop\Bundle\StorageListBundle\Core\EventListener\StorageListBlamerListener;
 use CoreShop\Bundle\StorageListBundle\EventListener\CacheListener;
@@ -46,6 +47,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\Security\Http\Event\LogoutEvent;
 
 final class CoreShopStorageListExtension extends AbstractModelExtension
 {
@@ -217,6 +219,25 @@ final class CoreShopStorageListExtension extends AbstractModelExtension
                         $sessionAndStoreSubscriber->addTag('kernel.event_subscriber');
 
                         $container->setDefinition('coreshop.storage_list.session_and_store_subscriber.' . $name, $sessionAndStoreSubscriber);
+
+                        if ($list['session']['enable_logout_subscriber']) {
+                            $logoutSubscriber = new Definition(SessionStoreStorageListLogoutSubscriber::class);
+                            $logoutSubscriber->setArgument('$context', new Reference($contextCompositeServiceName));
+                            $logoutSubscriber->setArgument('$sessionKeyName', $list['session']['key']);
+                            $logoutSubscriber->addTag(
+                                'kernel.event_listener',
+                                [
+                                    'event' => LogoutEvent::class,
+                                    'method' => 'onLogoutSuccess',
+                                    'dispatcher' => 'security.event_dispatcher.coreshop_frontend',
+                                ],
+                            );
+
+                            $container->setDefinition(
+                                'coreshop.storage_list.logout_subscriber.' . $name,
+                                $logoutSubscriber,
+                            );
+                        }
                     }
 
                     $blamer = new Definition(StorageListBlamerListener::class);
